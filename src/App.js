@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import './styles/App.css';
 import PostList from "./components/PostList";
 import MyButton from "./components/UI/button/MyButton";
@@ -12,14 +12,12 @@ function App() {
     { id: 3, title: 'React', body: 'Description' }
   ])
 
-  const bodyInputRef = useRef();
-
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [post, setPost] = useState({title: '', body: ''});
 
   const addNewPost = (event) => {
     event.preventDefault();
-    console.log(bodyInputRef.current.value)
+    setPosts([...posts, {...post, id: Date.now()}]);
+    setPost({title: '', body: ''})
   }
 
   return (
@@ -29,14 +27,15 @@ function App() {
         <MyInput
           type="text"
           placeholder="Название поста"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={post.title}
+          onChange={(e) => setPost({ ...post, title: e.target.value })}
         />
         {/* Неуправляемый / Неконтролируемый компонент */}
         <MyInput
-          ref={bodyInputRef}
           type="text"
           placeholder="Описание поста"
+          value={post.body}
+          onChange={(e) => setPost({ ...post, body: e.target.value })}
         />
         <MyButton onClick={addNewPost}>Создать пост</MyButton>
       </form>
