@@ -17,8 +17,12 @@ function App() {
   const [searchQuery, setSearchQuery] = useState("")
 
   const sortedPosts = useMemo(() => {
-    return selectedSort ? [...posts].sort((a,b)=>a[selectedSort].localeCompare(b[selectedSort])) : posts
+    return selectedSort ? [...posts].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort])) : posts;
    }, [selectedSort, posts])
+
+  const sortedAndSearchedPosts = useMemo(() => {
+    return sortedPosts.filter(post => post.title.toLowerCase().includes(searchQuery.toLowerCase()));
+  }, [searchQuery, sortedPosts])
 
   const createPost = (newPost) => {
     setPosts([...posts, {...newPost}]);
@@ -53,8 +57,8 @@ function App() {
           ]}
         />
       </div>
-      {posts.length > 0
-        ? <PostList posts={sortedPosts} remove={removePost} title="Посты про JS" />
+      {sortedAndSearchedPosts.length > 0
+        ? <PostList posts={sortedAndSearchedPosts} remove={removePost} title="Посты про JS" />
         : <h1 style={{textAlign: "center", marginTop: 15}}>Посты еще не написали!</h1>
       }
 
