@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './styles/App.css';
 import PostList from "./components/PostList";
 import PostForm from "./components/PostForm";
@@ -11,11 +11,7 @@ import axios from 'axios';
 
 
 function App() {
-  const [posts, setPosts] = useState([
-    { id: 1, title: 'Javascript', body: 'a Description' },
-    { id: 2, title: 'Typescript', body: 'b Description' },
-    { id: 3, title: 'React', body: 'c Description' }
-  ])
+  const [posts, setPosts] = useState([])
 
   const [filter, setFilter] = useState({ sort: '', query: '' })
   const [modal, setModal] = useState(false)
@@ -35,6 +31,10 @@ function App() {
   const removePost = (post) => {
     setPosts([...posts.filter(p => p.id !== post.id)]);
   }
+
+  useEffect(() => {
+    fetchPosts()
+  }, [])
 
   return (
     <div className="App">
