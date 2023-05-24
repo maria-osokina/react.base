@@ -23,7 +23,7 @@
 }
 
 .post-enter {
-    transform: translateX(500px);
+    transform: translateX(-500px);
 }
 .post-enter-active {
     transform: translateX(0);
