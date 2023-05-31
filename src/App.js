@@ -9,7 +9,8 @@ import { usePosts } from "./hooks/usePosts";
 import PostService from "./API/PostService";
 import MyLoader from "./components/UI/loader/MyLoader";
 import { useFetching } from "./hooks/useFetching";
-import { getPageCount, getPagesArray } from "./utils/pages";
+import { getPageCount } from "./utils/pages";
+import Pagination from "./components/UI/pagination/Pagination";
 
 function App() {
   const [posts, setPosts] = useState([])
@@ -19,11 +20,11 @@ function App() {
   const [totalPages, setTotalPages] = useState(0);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
-  const pagesArray = getPagesArray(totalPages);
+
 
 
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
-  const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
+  const [fetchPosts, isPostsLoading, postError] = useFetching(async (limit, page) => {
     const response = await PostService.getAll(limit, page);
     setPosts(response.data);
     console.log(response.headers['x-total-count'])
@@ -41,11 +42,11 @@ function App() {
 
   const changePage = (page) => {
     setPage(page);
-    fetchPosts();
+    fetchPosts(limit, page);
   }
 
   useEffect(() => {
-    fetchPosts()
+    fetchPosts(limit, page)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -62,14 +63,11 @@ function App() {
         ? <div style={{display: 'flex', justifyContent: 'center', marginTop: 50}}><MyLoader /></div>
         : <PostList posts={sortedAndSearchedPosts} remove={removePost} title="Посты про JS" />
       }
-      <div className="page__wrapper">
-        {pagesArray.map(p =>
-          <span
-            key={p}
-            onClick={()=> changePage(p)}
-            className={page === p ? "page page__current" : "page"}>{p}</span>
-        )}
-      </div>
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        changePage={changePage}
+      />
     </div>
   );
 }
